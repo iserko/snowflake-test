@@ -8,3 +8,5 @@ services:
       SNOWFLAKE_PASSWORD:
       SNOWFLAKE_ACCOUNT:
       SNOWFLAKE_DATABASE:
+    volumes:
+      - ./:/home/user/code
