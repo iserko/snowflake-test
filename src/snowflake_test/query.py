@@ -9,6 +9,7 @@ SQL = """-- Test query for snowflake-test
 SELECT *
 FROM lyst_analytics.raw_page_views
 WHERE event_timestamp >= '2020-01-01'
+AND event_timestamp < '2020-01-13'
 """
 
 log = logging.getLogger("snowflake_test.query")
@@ -22,18 +23,26 @@ def query():
         password=settings.SNOWFLAKE_PASSWORD,
         account=settings.SNOWFLAKE_ACCOUNT,
         database=settings.SNOWFLAKE_DATABASE,
+        role=settings.SNOWFLAKE_ROLE,
     ) as conn:
         with conn.cursor() as cursor:
-            cursor.execute(f"USE {settings.SNOWFLAKE_WAREHOUSE};")
+            log.info("Switching to warehouse %s", settings.SNOWFLAKE_WAREHOUSE)
+            cursor.execute(
+                f"USE WAREHOUSE {settings.SNOWFLAKE_WAREHOUSE.upper()};"
+            )
+            log.info("Executing query")
             cursor.execute(SQL)
+            log.info("Iterating over query results")
             rows = 0
             while True:
-                data = cursor.fetchmany(50_000)
+                data = cursor.fetchmany(100_000)
+                log.info("Fetched %s rows", len(data))
                 if not data:
                     break
                 df = pandas.DataFrame(data, columns=cursor.description)
                 rows += df.shape[0]
-            print(rows)
+                log.info("Have iterated over %s rows so far", rows)
+            log.info("Finished query after %s", rows)
 
 
 if __name__ == "__main__":
