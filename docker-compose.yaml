@@ -1,0 +1,10 @@
+version: "3"
+services:
+  sftest:
+    build: .
+    command: python -m snowflake_test.query
+    environment:
+      SNOWFLAKE_USER:
+      SNOWFLAKE_PASSWORD:
+      SNOWFLAKE_ACCOUNT:
+      SNOWFLAKE_DATABASE:
