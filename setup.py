@@ -15,6 +15,6 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(where="src"),
     python_requires=">=3.7, <4",
-    install_requires=["snowflake_connector_python", "environs"],
+    install_requires=["snowflake-connector-python", "environs"],
     entry_points={"console_scripts": ["query=snowflake_test.query:query"]},
 )
